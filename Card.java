@@ -1,4 +1,4 @@
-package PontoonGui;
+package Pontoon;
 
 public class Card {
 

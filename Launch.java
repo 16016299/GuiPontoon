@@ -1,4 +1,4 @@
-package PontoonGui;
+package Pontoon;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -15,6 +15,17 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Launch extends Application {
+    Card Newcard = new Card();
+    int newcard;
+    Text displayYourCards = new Text();
+
+    GridPane grid = new GridPane();
+    int draw = 2;
+    int total;
+    int house;
+    String newText;
+
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -23,19 +34,19 @@ public class Launch extends Application {
         primaryStage.setTitle("Pontoon");
 
         System.out.println("game start");
-        Player P1 = new Player();
         House P2 = new House();
 
         int playertotal = 0;
-        int house = P2.gethousetotal();
+        house = P2.gethousetotal();
 
         Card Card1 = new Card();
         Card Card2 = new Card();
+
         int card1 = Card1.getCard();
         int card2 = Card2.getCard();
-        int total;
+        int draws = 2;
+        total = card1 + card2;
 
-        GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
@@ -43,7 +54,6 @@ public class Launch extends Application {
 
         Scene scene = new Scene(grid, 500, 500);
 
-        Text displayYourCards = new Text();
         String text = "your have drawn a "+card1+" and a "+card2+", would you like to draw another card?";
         displayYourCards.setText(text);
         displayYourCards.setX(500);
@@ -60,51 +70,71 @@ public class Launch extends Application {
         hbYBtn.getChildren().add(noBtn);
         grid.add(noBtn,1,1);
 
-        Text displayNewCard = new Text();
 
-        yesBtn.setOnAction(new EventHandler<ActionEvent>()
+
+        yesBtn.setOnAction(Event ->
         {
-            public int handle(ActionEvent event) {
-                Card Newcard = new Card();
-                int newcard = Newcard.getCard();
-                String newText = "your new card is a " + newcard;
-                displayNewCard.setText(newText);
-                total = total + newcard;
-                return total;
-            }
+            Text displayNewCard = new Text();
+            newcard = Newcard.getCard();
+            newText = "your new card is a "+newcard;
+            displayNewCard.setText(newText);
+            grid.add(displayNewCard,0, draw);
+            draw++;
+            total = total +newcard;
+
+
         });
 
+        noBtn.setOnAction(Event ->
+        {
+            Text displayTotals = new Text();
+            newText = "you have "+total+" and house has "+house;
+            displayTotals.setText(newText);
+            draw++;
+            grid.add(displayTotals, 0, draw);
 
-        System.out.println("you have "+playertotal+" and house has "+house);
+            Text displayWinner = new Text();
 
-        if(playertotal > 21){
-            if(house < 22) {
-                System.out.println("youre bust, house wins");
-            }
-            else if(house > 21) {
-                System.out.println("youre both bust, its a draw");
-            }
-        }
-
-        if(playertotal < 22) {
-            if(house > 21) {
-                System.out.println("house is bust, you win");
-            }
-            else if(house < 22) {
-                if(playertotal > house) {
-                    System.out.println("you win");
+            if(total > 21){
+                if(house < 22) {
+                    newText = "youre bust, house wins";
                 }
-                else if(house > playertotal) {
-                    System.out.println("you loose");
+                else if(house > 21) {
+                    newText = "youre both bust, its a draw";
                 }
-                else {
-                    System.out.println("its a draw");
-                }
-
             }
-        }
+
+            if(total < 22) {
+                if(house > 21) {
+                    newText = "house is bust, you win";
+                }
+                else if(house < 22) {
+                    if(total > house) {
+                        newText = "you win";
+                    }
+                    else if(house > total) {
+                        newText = "you loose";
+                    }
+                    else {
+                        newText = "its a draw";
+                    }
+
+                }
+            }
+            displayWinner.setText(newText);
+            draw++;
+            grid.add(displayWinner, 0, draw);
+
+        });
+
         primaryStage.setScene(scene);
         primaryStage.show();
 
+    }
+
+
+    public int newTotal(int totalHolder,int newCardHolder){
+        totalHolder = totalHolder + newCardHolder;
+        return totalHolder;
     }
 }
